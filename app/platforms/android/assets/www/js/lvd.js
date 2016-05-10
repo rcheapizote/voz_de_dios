@@ -2699,9 +2699,19 @@ screen_write.hide = function(){
 	screen_write.addClass('downed');
 };
 
+/*
 function removeImg(){
 	if(jQuery(".publish").hasClass('loading')) return false;
 	if(jQuery(".attach").length > 0) jQuery(".attach").remove();
+}
+*/
+
+function removeImg(){
+	if(jQuery(".publish").hasClass('loading')) return false;
+	if(jQuery(".attachment").length > 0) {
+		screen_write.wrapper.find("p").remove();
+		jQuery(".attachment").remove();
+		}
 }
 
 /*VIDEO CONTROLLER*/
@@ -2710,19 +2720,38 @@ var captureSuccess = function(mediaFiles) {
     for (i = 0, len = mediaFiles.length; i < len; i += 1) {
         path = mediaFiles[i].fullPath;
     }
-    if(jQuery(".attach").length > 0) jQuery(".attach").remove();
+    if(jQuery(".attachment").length > 0) removeImg();//jQuery(".attach").remove();
+    var html = 	'<video onclick="removeImg()" class="attachment" id="video_user"  width="50%" height="100px" name="preview" data-src="'+path+'" src="'+path+'"></video>';
+    screen_write.wrapper.append(html);
+    screen_write.wrapper.append('<p>Presiona el video adjunto para removerlo.</p>');    
+    /*if(jQuery(".attach").length > 0) jQuery(".attach").remove();
     var html = 	'<video onclick="removeImg()" class="attach" id="video_user" width="50%" height="100px" name="preview" data-src="'+path+'" src="'+path+'"></video>';
     screen_write.wrapper.append(html);
+    */
+    
 };
 var captureError = function(error) {
     //navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
 };
 
 /*FOTO CONTROLLES*/
+/*
 function fotoSeleccionada(imageURI){
 	if(jQuery(".attach").length > 0) jQuery(".attach").remove();
+	if(jQuery(".attachment").length > 0) removeImg();//jQuery(".attach").remove();
 	var html = 	'<img onclick="removeImg()" class="attach" id="image_user" width="50%"  data-src="'+imageURI+'" src="'+imageURI+'" />';
     screen_write.wrapper.append(html);
+}
+*/
+
+function fotoSeleccionada(imageURI){
+	if(jQuery(".attachment").length > 0) removeImg();//jQuery(".attach").remove();
+	console.log("imageURI "+imageURI);
+	//cropImage.createEvent(imageURI);
+	var html = 	'<img onclick="removeImg()" class="attachment" id="image_user" width="50%"  data-src="'+imageURI+'" src="'+imageURI+'" />';
+    screen_write.wrapper.append(html);
+    screen_write.wrapper.append('<p>Presiona la imagen adjunta para removerla.</p>');
+    console.log('append foto seleccionada');
 }
 
 function useCamera(){
@@ -2797,12 +2826,12 @@ function publish(){
     
     jQuery(".publish").addClass('loading');
     
-    if(jQuery('.attach').length > 0){ //cuando hay archivo
+    if(jQuery('.attachment').length > 0){ //cuando hay archivo
         var url = urlws;
         var options = new FileUploadOptions();
         var params = {};
-        var IMG_URI = $('.attach').attr('src');
-        var id = $('.attach').attr('id');
+        var IMG_URI = $('.attachment').attr('src');
+        var id = $('.attachment').attr('id');
         
         if(id == "video_user") {
             options.mimeType = 'video/quicktime';
@@ -3001,7 +3030,8 @@ function show_write(op){
 //            screen_write.wrapper.find('.instruc_publish').addClass('none');
         }
         
-    	if(jQuery('.attach').length > 0){ jQuery('.attach').remove();}
+    	//if(jQuery('.attach').length > 0){ jQuery('.attach').remove();}
+    	if(jQuery('.attachment').length > 0){ jQuery('.attachment').remove();}
         screen_write.wrapper.find('input').val('');
         screen_write.wrapper.find('textarea').val('');
         screen_write.wrapper.find('.nombre_oracion').addClass('none');
